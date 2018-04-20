@@ -38,5 +38,5 @@ RUN make -j4 && make install
 #RUN rm -rf ./bitcoin
 
 WORKDIR /root/regtest
-EXPOSE 12001
+EXPOSE 18443
 CMD ["/usr/bin/env","bash"]
