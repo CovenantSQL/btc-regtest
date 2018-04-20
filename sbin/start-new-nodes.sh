@@ -28,16 +28,29 @@ USAGE
 add_node() {
     # $1: node name
     # $2: target ip:port
-    sudo docker exec "$1" bitcoin-cli -datadir=data addnode "$2" add
+
+    # Retry for a few times while the node is initiating
+    local index
+
+    for ((index=0; index<5; index++)); do
+        if sudo docker exec "$1" bitcoin-cli -datadir=data addnode "$2" add; then
+            return 0
+        else
+            sleep 1
+        fi
+    done
+
+    return 1
 }
 
 start_new_nodes() {
     local ip=
     local port=
     local name=
+    local index=
 
-    for ((i=0; i<NODES; i++)); do
-        port=$((START_PORT+i))
+    for ((index=0; index<NODES; index++)); do
+        port=$((START_PORT+index))
         name="regtest-$port"
 
         sudo docker run -dt --expose="$BTC_PORT" -p "$port:$RPC_PORT" --name="$name" "$IMAGE" \
