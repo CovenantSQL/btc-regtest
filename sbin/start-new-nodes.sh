@@ -3,10 +3,10 @@
 declare -r ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source $ROOT_DIR/common/log.sh
 
-declare -r IMAGE=regtest:latest
 declare -r BTC_PORT=18444
 declare -r RPC_PORT=18443
 
+declare IMAGE=regtest:latest
 declare JOIN=0
 declare JOINT=
 declare NODES=1
@@ -14,13 +14,15 @@ declare START_PORT=5000
 
 print_usage() {
     cat <<USAGE
-$0 [OPTION]...
+$0 [OPTION]... [IMAGE[:TAG]]
 
     -h, --help              Display this help and exit
         --join[=<ip:port>]  Join these new nodes into a BTC network; or to another network if the
                               optional argument is given as a joint point
     -n, --nodes=INT         Set node number
     -p, --start-port=INT    Start port of a range
+
+Default image tag is "regtest:latest".
 
 USAGE
 }
@@ -116,7 +118,8 @@ main() {
                 ;;
             --)
                 shift
-                [[ $# -eq 0 ]] || { print_usage; return 1; }
+                [[ -n "$1" ]] && IMAGE="$1"
+                [[ $# -le 1 ]] || { print_usage; return 1; }
                 break
                 ;;
             *)

@@ -3,11 +3,15 @@
 declare -r ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source $ROOT_DIR/common/log.sh
 
+declare IMAGE=regtest
+
 print_usage() {
     cat <<USAGE
-$0 [OPTION]...
+$0 [OPTION]... [IMAGE]
 
     -h, --help              Display this help and exit
+
+Default image name is "regtest".
 
 USAGE
 }
@@ -40,7 +44,8 @@ main() {
                 ;;
             --)
                 shift
-                [[ $# -eq 0 ]] || { print_usage; return 1; }
+                [[ -n "$1" ]] && IMAGE="$1"
+                [[ $# -le 1 ]] || { print_usage; return 1; }
                 break
                 ;;
             *)
