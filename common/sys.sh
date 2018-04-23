@@ -1,3 +1,5 @@
+#! /usr/bin/env bash
+
 _has_command() {
     for arg in "$@"; do
         if ! command -v $arg >/dev/null; then
