@@ -17,13 +17,23 @@ USAGE
 }
 
 download_src() {
-    mkdir -p "${ROOT_DIR}/docker-files/src" && cd "${ROOT_DIR}/docker-files/src" &&
-        wget -qO- http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz | tar -vxz &&
+    local src_dir="${ROOT_DIR}/docker-files/src"
+
+    mkdir -p "$src_dir" && cd "$src_dir"
+
+    if [[ -d "$src_dir/db-4.8.30.NC" ]]; then
+        rm -rf "$src_dir/db-4.8.30.NC"
+    fi
+
+    wget -qO- http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz | tar -vxz || return
+
+    if ! [[ -d "$src_dir/bitcoin" ]]; then
         git clone https://github.com/bitcoin/bitcoin.git
+    fi
 }
 
 build_image() {
-    cd "${ROOT_DIR}/docker-files" && sudo docker build -t regtest .
+    cd "${ROOT_DIR}/docker-files" && sudo docker build -t "$IMAGE" .
 }
 
 main() {
