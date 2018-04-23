@@ -90,7 +90,7 @@ start_new_nodes() {
 main() {
     # Parse options
     local args
-    args=$(getopt -o hj::n:p: -l help,join::,nodes:start-port: -n $0 -- "$@")
+    args=$(getopt -o hj::n:p: -l help,join::,nodes:,start-port: -n $0 -- "$@")
     [[ $? -eq 0 ]] || { print_usage; return 1; }
     eval set -- "$args"
 
